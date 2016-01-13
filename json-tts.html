@@ -1,0 +1,52 @@
+<html>
+<head>
+	<title></title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+</head>
+<body>
+
+<input type='button' id='btnSubmitTTS' value='synthesize speech'>
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+	$('#btnSubmitTTS').click(function() {
+		SendJSON();
+	});
+});
+
+function SendJSON() {
+    var parameters = {
+        "apikey":"developerdemokeydeveloperdemokey", //your api key here
+        "action":"convert",
+        "voice":"usenglishfemale",
+        "speed":"0",
+        "pitch":"100",
+        "text":"Hello everyone! This is an automated request for text-to-speech!"
+    }
+	
+	$.ajax({
+		type: 'POST',
+		url: 'http://api.ispeech.org/api/rest',
+		//dataType: "json",
+		data: parameters,
+		//contentType: "application/json; charset=utf-8",
+		complete: function(xhr, status) {
+			var message = [
+				'connection status: '+ status, 
+				'http code: ' + xhr.status,
+				'length of response: ' + xhr.responseText.length + ' bytes'
+				]
+
+			var info = "";
+			for(key in message)
+				info += message[key]+"\n";
+
+			alert(info);
+		}
+	});
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<html>
+<head>
+    <title></title>
+<!--script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script-->
+</head>
+<body>
+
+<audio id="iSpeech" preload="metadata" controls="controls"></audio>
+
+<input type='button' id='btnSubmitTTS' value='synthesize speech'>
+
+<script type='text/javascript'>
+
+document.getElementById("btnSubmitTTS").addEventListener("click", function(event){speak();});
+document.getElementById("iSpeech").addEventListener("error", function(event){processError(event)});
+
+function speak(selection){
+
+    var server = "http://api.ispeech.org/api/rest?";
+    
+    var parameters = {
+        "apikey":"developerdemokeydeveloperdemokey", //your api key here
+        "action":"convert",
+        "voice":"usenglishfemale",
+        "speed":"0",
+        "pitch":"100",
+        "text":"Hello everyone! This is an automated request for text-to-speech!"
+    }
+
+    var link = server;
+    for (var key in parameters)
+        link += encodeURIComponent(key)+"="+encodeURIComponent(parameters[key])+"&";
+    link = link.slice(0, -1);
+
+    document.getElementById('iSpeech').src = link;
+    document.getElementById('iSpeech').volume = 0.5;
+    document.getElementById('iSpeech').play();
+}
+
+function processError(event){
+    console.error(event.srcElement.error);
+
+    if (event.target.error.code == 4){
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", event.srcElement.src+"&output=json", false);
+        xhr.addEventListener(
+            "load", 
+            function(event){
+                if (event.srcElement.status == 202){
+                    var response = JSON.parse(this.response);
+                    alert("Error "+response.code+".  "+response.message);
+                }
+            }
+        );
+        xhr.send();
+    }
+}
+
+</script>
+</body>
+</html>
